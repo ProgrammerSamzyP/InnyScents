@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart — Inny Scents Atelier</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; color: #e5e5e5; }
+        h1, h2, h3, .serif { font-family: 'Playfair Display', serif; }
+        .gold { color: #d4af37; }
+        .bg-gold { background-color: #d4af37; }
+        .border-gold { border-color: #d4af37; }
+        .btn-gold { background: transparent; border: 1px solid #d4af37; color: #d4af37; padding: 0.5rem 1.5rem; transition: 0.3s; }
+        .btn-gold:hover { background: #d4af37; color: #0a0a0a; }
+        .gold-line { width: 60px; height: 2px; background: #d4af37; margin: 1rem 0; }
+        .hover-gold:hover { color: #d4af37; }
+        input, textarea { background-color: #1a1a1a; border: 1px solid #333; color: white; padding: 0.5rem; width: 100%; }
+        input:focus, textarea:focus { border-color: #d4af37; outline: none; }
+    </style>
+</head>
+<body>
+    <header class="border-b border-gray-800 py-5 px-6 md:px-12 bg-[#0a0a0a] relative">
+        <div class="flex justify-between items-center">
+            <div class="text-2xl serif font-bold tracking-wide">
+                <span class="text-white">INNY SCENTS</span> <span class="gold">ATELIER</span>
+            </div>
+            <nav class="hidden md:flex space-x-8 text-sm uppercase tracking-wider items-center">
+                <a href="index.html" class="hover-gold">Home</a>
+                <a href="shop.html" class="hover-gold">Shop</a>
+                <a href="about.html" class="hover-gold">About</a>
+                <a href="contact.html" class="hover-gold">Contact</a>
+                <a href="cart.html" class="relative hover-gold">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-3 bg-gold text-black text-xs rounded-full w-4 h-4 flex items-center justify-center">0</span>
+                </a>
+                <div id="auth-links-desktop" class="flex items-center space-x-4"></div>
+            </nav>
+            <div class="flex items-center space-x-4 md:hidden">
+                <a href="cart.html" class="relative hover-gold">
+                    <i class="fas fa-shopping-bag text-xl"></i>
+                    <span id="cart-count-mobile" class="absolute -top-2 -right-3 bg-gold text-black text-xs rounded-full w-4 h-4 flex items-center justify-center">0</span>
+                </a>
+                <button id="menu-toggle" class="text-2xl focus:outline-none">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 space-y-3 text-center border-t border-gray-800 pt-4">
+            <a href="index.html" class="block hover-gold">Home</a>
+            <a href="shop.html" class="block hover-gold">Shop</a>
+            <a href="about.html" class="block hover-gold">About</a>
+            <a href="contact.html" class="block hover-gold">Contact</a>
+            <div id="auth-links-mobile" class="flex flex-col space-y-2 pt-2"></div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-16">
+        <h1 class="text-4xl serif text-center">Your <span class="gold">Cart</span></h1>
+        <div class="gold-line mx-auto"></div>
+
+        <div class="grid md:grid-cols-3 gap-8 mt-12">
+            <!-- Cart items -->
+            <div class="md:col-span-2">
+                <div id="cart-items" class="space-y-4"></div>
+                <div id="empty-cart" class="text-center py-12 hidden">
+                    <p class="text-gray-400">Your cart is empty.</p>
+                    <a href="shop.html" class="btn-gold inline-block mt-4">Continue Shopping</a>
+                </div>
+            </div>
+
+            <!-- Checkout form -->
+            <div class="bg-[#111] p-6">
+                <h2 class="text-2xl serif mb-4">Complete order</h2>
+                <form id="order-form">
+                    <div class="mb-4">
+                        <label class="block text-sm gold mb-1">Full name</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm gold mb-1">Phone (for WhatsApp)</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm gold mb-1">Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm gold mb-1">Delivery address</label>
+                        <textarea id="address" rows="2" required></textarea>
+                    </div>
+
+                    <div class="border-t border-gray-700 pt-4 mt-4">
+                        <div class="flex justify-between">
+                            <span>Subtotal</span>
+                            <span id="subtotal">₦0</span>
+                        </div>
+                        <div class="flex justify-between mt-2">
+                            <span>Delivery</span>
+                            <span>₦0 (free)</span>
+                        </div>
+                        <div class="flex justify-between font-bold text-lg mt-4 gold">
+                            <span>Total</span>
+                            <span id="total">₦0</span>
+                        </div>
+                    </div>
+
+                    <button type="button" id="place-order-btn" class="btn-gold w-full mt-6 py-3">Place Order</button>
+                    <button type="button" id="whatsapp-order-btn" class="border border-gold text-gold w-full mt-3 py-3 hover:bg-gold hover:text-black transition">Order on WhatsApp</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-t border-gray-800 py-10 px-6 text-sm text-gray-400">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div>© 2025 INNY SCENTS ATELIER — all rights reserved</div>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+                <a href="#" class="hover-gold text-xl"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="hover-gold text-xl"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" class="hover-gold text-xl"><i class="far fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize EmailJS (replace with your keys)
+        (function() {
+            emailjs.init("YOUR_PUBLIC_KEY");
+        })();
+
+        function loadCart() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const container = document.getElementById('cart-items');
+            const emptyDiv = document.getElementById('empty-cart');
+            const subtotalSpan = document.getElementById('subtotal');
+            const totalSpan = document.getElementById('total');
+
+            if (cart.length === 0) {
+                container.innerHTML = '';
+                emptyDiv.classList.remove('hidden');
+                subtotalSpan.innerText = '₦0';
+                totalSpan.innerText = '₦0';
+                return;
+            }
+            emptyDiv.classList.add('hidden');
+
+            let itemsHtml = '';
+            let subtotal = 0;
+            cart.forEach((item, index) => {
+                itemsHtml += `
+                    <div class="flex gap-4 bg-[#111] p-4">
+                        <img src="${item.img}" class="w-20 h-20 object-cover">
+                        <div class="flex-1">
+                            <h3 class="serif">${item.name}</h3>
+                            <p class="text-sm gold">${item.size} | ₦${item.price}</p>
+                        </div>
+                        <button class="text-gray-400 hover:text-gold remove-item" data-index="${index}"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                subtotal += item.price;
+            });
+            container.innerHTML = itemsHtml;
+            subtotalSpan.innerText = `₦${subtotal}`;
+            totalSpan.innerText = `₦${subtotal}`;
+
+            // Remove item
+            document.querySelectorAll('.remove-item').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const idx = this.dataset.index;
+                    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                    cart.splice(idx, 1);
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    loadCart();
+                    updateCartCount();
+                });
+            });
+        }
+
+        // Place Order (EmailJS)
+        document.getElementById('place-order-btn')?.addEventListener('click', function() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart.length === 0) { alert('Cart is empty.'); return; }
+
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const address = document.getElementById('address').value.trim();
+            if (!name || !phone || !email || !address) {
+                alert('Please fill all fields');
+                return;
+            }
+
+            const itemsList = cart.map(item => `${item.name} (${item.size}) - ₦${item.price}`).join('\n');
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+            const templateParams = {
+                to_email: "your-email@example.com", // Replace
+                from_name: name,
+                phone: phone,
+                email: email,
+                address: address,
+                items: itemsList,
+                total: `₦${total}`
+            };
+
+            emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+                .then(() => {
+                    alert('Order placed! We will contact you soon.');
+                    localStorage.removeItem('cart');
+                    loadCart();
+                    updateCartCount();
+                }, (error) => {
+                    alert('Failed to send order. Please try WhatsApp.');
+                    console.error(error);
+                });
+        });
+
+        // Order via WhatsApp
+        document.getElementById('whatsapp-order-btn')?.addEventListener('click', function() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart.length === 0) { alert('Cart is empty.'); return; }
+
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const email = document.getElementById('email').value.trim();
+
+            let message = `Hello, I want to order:%0A`;
+            cart.forEach(item => {
+                message += `- ${item.name} (${item.size}) : ₦${item.price}%0A`;
+            });
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            message += `%0ATotal: ₦${total}%0AName: ${name}%0APhone: ${phone}%0AEmail: ${email}%0AAddress: ${address}`;
+
+            window.open(`https://wa.me/2349014889544?text=${message}`, '_blank'); // Replace
+        });
+
+        // ========== AUTH PROTECTION ==========
+        function checkAuth() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+        }
+        checkAuth();
+
+        // ========== CART COUNT ==========
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            document.getElementById('cart-count') && (document.getElementById('cart-count').innerText = cart.length);
+            document.getElementById('cart-count-mobile') && (document.getElementById('cart-count-mobile').innerText = cart.length);
+        }
+
+        // ========== AUTH UI ==========
+        function updateAuthUI() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            const desktopContainer = document.getElementById('auth-links-desktop');
+            const mobileContainer = document.getElementById('auth-links-mobile');
+            if (!desktopContainer || !mobileContainer) return;
+
+            if (user) {
+                desktopContainer.innerHTML = `
+                    <span class="text-gold">Hi, ${user.name}</span>
+                    <a href="#" id="logout-link-desktop" class="hover-gold">Logout</a>
+                `;
+                mobileContainer.innerHTML = `
+                    <span class="text-gold block">Hi, ${user.name}</span>
+                    <a href="#" id="logout-link-mobile" class="block hover-gold">Logout</a>
+                `;
+                document.getElementById('logout-link-desktop')?.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem('currentUser');
+                    updateAuthUI();
+                    window.location.href = 'index.html';
+                });
+                document.getElementById('logout-link-mobile')?.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem('currentUser');
+                    updateAuthUI();
+                    window.location.href = 'index.html';
+                });
+            } else {
+                desktopContainer.innerHTML = `<a href="login.html" class="hover-gold">Login</a><a href="signup.html" class="hover-gold">Sign Up</a>`;
+                mobileContainer.innerHTML = `<a href="login.html" class="block hover-gold">Login</a><a href="signup.html" class="block hover-gold">Sign Up</a>`;
+            }
+        }
+
+        // ========== MOBILE MENU TOGGLE ==========
+        document.getElementById('menu-toggle')?.addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Initial calls
+        loadCart();
+        updateCartCount();
+        updateAuthUI();
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'cart') {
+                loadCart();
+                updateCartCount();
+            }
+            if (e.key === 'currentUser') {
+                updateAuthUI();
+                if (!localStorage.getItem('currentUser')) {
+                    window.location.href = 'login.html';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

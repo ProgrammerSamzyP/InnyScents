@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop — Inny Scents Atelier</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; color: #e5e5e5; }
+        h1, h2, h3, .serif { font-family: 'Playfair Display', serif; }
+        .gold { color: #d4af37; }
+        .bg-gold { background-color: #d4af37; }
+        .border-gold { border-color: #d4af37; }
+        .btn-gold { background: transparent; border: 1px solid #d4af37; color: #d4af37; padding: 0.5rem 1.5rem; transition: 0.3s; }
+        .btn-gold:hover { background: #d4af37; color: #0a0a0a; }
+        .gold-line { width: 60px; height: 2px; background: #d4af37; margin: 1rem 0; }
+        .card-hover { transition: transform 0.3s, box-shadow 0.3s; }
+        .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 30px -10px rgba(212,175,55,0.2); }
+        .hover-gold:hover { color: #d4af37; }
+        .filter-btn.active { background-color: #d4af37; color: #0a0a0a; border-color: #d4af37; }
+    </style>
+</head>
+<body>
+    <!-- Header (same as index) -->
+    <header class="border-b border-gray-800 py-5 px-6 md:px-12 bg-[#0a0a0a] relative">
+        <div class="flex justify-between items-center">
+            <div class="text-2xl serif font-bold tracking-wide">
+                <span class="text-white">INNY SCENTS</span> <span class="gold">ATELIER</span>
+            </div>
+            <nav class="hidden md:flex space-x-8 text-sm uppercase tracking-wider items-center">
+                <a href="index.html" class="hover-gold">Home</a>
+                <a href="shop.html" class="hover-gold">Shop</a>
+                <a href="about.html" class="hover-gold">About</a>
+                <a href="contact.html" class="hover-gold">Contact</a>
+                <a href="cart.html" class="relative hover-gold">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-3 bg-gold text-black text-xs rounded-full w-4 h-4 flex items-center justify-center">0</span>
+                </a>
+                <div id="auth-links-desktop" class="flex items-center space-x-4"></div>
+            </nav>
+            <div class="flex items-center space-x-4 md:hidden">
+                <a href="cart.html" class="relative hover-gold">
+                    <i class="fas fa-shopping-bag text-xl"></i>
+                    <span id="cart-count-mobile" class="absolute -top-2 -right-3 bg-gold text-black text-xs rounded-full w-4 h-4 flex items-center justify-center">0</span>
+                </a>
+                <button id="menu-toggle" class="text-2xl focus:outline-none">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 space-y-3 text-center border-t border-gray-800 pt-4">
+            <a href="index.html" class="block hover-gold">Home</a>
+            <a href="shop.html" class="block hover-gold">Shop</a>
+            <a href="about.html" class="block hover-gold">About</a>
+            <a href="contact.html" class="block hover-gold">Contact</a>
+            <div id="auth-links-mobile" class="flex flex-col space-y-2 pt-2"></div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-16">
+        <h1 class="text-4xl serif text-center">The <span class="gold">Collection</span></h1>
+        <div class="gold-line mx-auto"></div>
+
+        <!-- Filter -->
+        <div class="flex justify-center gap-4 mt-8">
+            <button class="filter-btn px-4 py-2 border border-gold text-gold bg-transparent hover:bg-gold hover:text-black transition" data-filter="all">All</button>
+            <button class="filter-btn px-4 py-2 border border-gold text-gold bg-transparent hover:bg-gold hover:text-black transition" data-filter="men">Men</button>
+            <button class="filter-btn px-4 py-2 border border-gold text-gold bg-transparent hover:bg-gold hover:text-black transition" data-filter="women">Women</button>
+            <button class="filter-btn px-4 py-2 border border-gold text-gold bg-transparent hover:bg-gold hover:text-black transition" data-filter="unisex">Unisex</button>
+        </div>
+
+        <!-- Product grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-12" id="product-grid"></div>
+    </main>
+
+    <footer class="border-t border-gray-800 py-10 px-6 text-sm text-gray-400">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div>© 2025 INNY SCENTS ATELIER — all rights reserved</div>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+                <a href="#" class="hover-gold text-xl"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="hover-gold text-xl"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" class="hover-gold text-xl"><i class="far fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Product data
+        const products = [
+            { id: 1, name: "Bad and Boujee", category: "men", type: "sweet / attractive", price: 6500, img: "/img/Bad and boujee.jpeg" },
+            { id: 2, name: "Kaly", category: "women", type: "Floral / Romantic", price: 12000, img: "/img/Kaly.jpeg" },
+            { id: 3, name: "Riggs", category: "unisex", type: "Fresh / Unisex", price: 3500, img: "/img/riggs.jpeg" },
+            { id: 4, name: "Bleu de chanel", category: "men", type: "Leather / Spicy", price: 20000, img: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=1770&auto=format&fit=crop" },
+            { id: 5, name: "Elixir", category: "women", type: "Floral / Powdery", price: 4500, img: "/img/rexlier perfume.jpeg" },
+            { id: 6, name: "6", category: "unisex", type: "Spicy / Sweet", price: 8000, img: "/img/six.jpeg" },
+            { id: 7, name: "ophylia", category: "woman", type: "Sexy / Soft", price: 15000, img: "/img/ophylia.jpeg" },
+            { id: 8, name: "24k", category: "unisex", type: "confident / calm", price: 7000, img: "/img/24k.jpeg" }
+        ];
+
+        function renderProducts(filter = "all") {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+            const filtered = filter === "all" ? products : products.filter(p => p.category === filter);
+            filtered.forEach(p => {
+                grid.innerHTML += `
+                    <div class="bg-[#111] p-5 rounded-sm card-hover">
+                        <img src="${p.img}" class="w-full h-64 object-cover" alt="${p.name}">
+                        <h3 class="text-xl serif mt-4">${p.name}</h3>
+                        <p class="gold text-sm">${p.type}</p>
+                        <p class="text-2xl mt-2">₦${p.price}</p>
+                        <a href="product.html?id=${p.id}" class="inline-block mt-3 btn-gold text-sm">View Scent</a>
+                    </div>
+                `;
+            });
+        }
+
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active', 'bg-gold', 'text-black'));
+                this.classList.add('active', 'bg-gold', 'text-black');
+                renderProducts(this.dataset.filter);
+            });
+        });
+
+        // Initial render
+        renderProducts('all');
+
+        // ========== AUTH PROTECTION ==========
+        function checkAuth() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (!user) {
+                // Redirect to login page
+                window.location.href = 'login.html';
+            }
+        }
+        checkAuth();
+
+        // ========== CART COUNT ==========
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            document.getElementById('cart-count') && (document.getElementById('cart-count').innerText = cart.length);
+            document.getElementById('cart-count-mobile') && (document.getElementById('cart-count-mobile').innerText = cart.length);
+        }
+
+        // ========== AUTH UI ==========
+        function updateAuthUI() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            const desktopContainer = document.getElementById('auth-links-desktop');
+            const mobileContainer = document.getElementById('auth-links-mobile');
+            if (!desktopContainer || !mobileContainer) return;
+
+            if (user) {
+                desktopContainer.innerHTML = `
+                    <span class="text-gold">Hi, ${user.name}</span>
+                    <a href="#" id="logout-link-desktop" class="hover-gold">Logout</a>
+                `;
+                mobileContainer.innerHTML = `
+                    <span class="text-gold block">Hi, ${user.name}</span>
+                    <a href="#" id="logout-link-mobile" class="block hover-gold">Logout</a>
+                `;
+                document.getElementById('logout-link-desktop')?.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem('currentUser');
+                    updateAuthUI();
+                    window.location.href = 'index.html';
+                });
+                document.getElementById('logout-link-mobile')?.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem('currentUser');
+                    updateAuthUI();
+                    window.location.href = 'index.html';
+                });
+            } else {
+                // This shouldn't happen because we redirect, but for safety:
+                desktopContainer.innerHTML = `<a href="login.html" class="hover-gold">Login</a><a href="signup.html" class="hover-gold">Sign Up</a>`;
+                mobileContainer.innerHTML = `<a href="login.html" class="block hover-gold">Login</a><a href="signup.html" class="block hover-gold">Sign Up</a>`;
+            }
+        }
+
+        // ========== MOBILE MENU TOGGLE ==========
+        document.getElementById('menu-toggle')?.addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Initial calls
+        updateCartCount();
+        updateAuthUI();
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'cart') updateCartCount();
+            if (e.key === 'currentUser') {
+                updateAuthUI();
+                // If user logs out in another tab, redirect to login
+                if (!localStorage.getItem('currentUser')) {
+                    window.location.href = 'login.html';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
